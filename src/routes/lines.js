@@ -55,4 +55,41 @@ router.post('/add', auth, async (req, res) => {
   }
 });
 
+// GET /api/lines/sos-alerts — get all SOS incidents
+router.get('/sos-alerts', auth, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT i.*, j.location_lat, j.location_lng, l.name as lineman_name, l.phone as lineman_phone, li.line_code, li.area_name
+       FROM incidents i
+       JOIN jobs j ON i.job_id = j.id
+       JOIN linemen l ON j.lineman_id = l.id
+       JOIN lines li ON j.line_id = li.id
+       WHERE i.type = 'SOS'
+       ORDER BY i.reported_at DESC
+       LIMIT 20`
+    );
+    res.json({ sos_alerts: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/lines/completed-jobs — recent completed jobs
+router.get('/completed-jobs', auth, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT j.*, l.name as lineman_name, l.phone as lineman_phone, 
+       li.line_code, li.area_name
+       FROM jobs j
+       JOIN linemen l ON j.lineman_id = l.id
+       JOIN lines li ON j.line_id = li.id
+       WHERE j.status = 'completed'
+       ORDER BY j.completed_at DESC
+       LIMIT 10`
+    );
+    res.json({ completed_jobs: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 module.exports = router;

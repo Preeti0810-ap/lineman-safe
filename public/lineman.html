@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinemanSafe – Lineman Portal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f0f4f8; color: #1a1a2e; }
+
+    .gov-bar { background: #1a3a6b; color: #fff; font-size: 12px; padding: 6px 24px; display: flex; justify-content: space-between; }
+    .gov-bar a { color: #f5c842; text-decoration: none; margin-left: 16px; }
+
+    .header { background: #fff; border-bottom: 4px solid #f5a623; padding: 14px 40px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .header-logo { width: 52px; height: 52px; background: #1a3a6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .header-text h1 { font-size: 1.1rem; color: #1a3a6b; font-weight: 700; }
+    .header-text p { font-size: 0.75rem; color: #888; }
+
+    .nav { background: #1a3a6b; padding: 0 40px; display: flex; }
+    .nav a { color: #ccd9f0; text-decoration: none; padding: 12px 20px; font-size: 0.85rem; font-weight: 500; border-bottom: 3px solid transparent; transition: all 0.2s; }
+    .nav a:hover, .nav a.active { color: #f5a623; border-bottom-color: #f5a623; }
+
+    .page-title { background: #1a3a6b; color: white; padding: 20px 40px; }
+    .page-title h2 { font-size: 1.2rem; font-weight: 600; }
+    .page-title p { font-size: 0.8rem; color: #a8c4e8; margin-top: 4px; }
+
+    .container { max-width: 560px; margin: 32px auto; padding: 0 20px; }
+
+    /* Login Card */
+    .card { background: white; border-radius: 10px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.09); margin-bottom: 20px; }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f0f4f8; }
+    .card-header .icon { font-size: 1.8rem; }
+    .card-header h3 { font-size: 1rem; color: #1a3a6b; font-weight: 700; }
+    .card-header p { font-size: 0.8rem; color: #888; }
+
+    label { display: block; font-size: 0.82rem; font-weight: 600; color: #444; margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid #d0d8e8;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      color: #1a1a2e;
+      margin-bottom: 16px;
+      transition: border 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    input:focus { outline: none; border-color: #1a3a6b; }
+
+    .btn {
+      width: 100%; padding: 13px;
+      border: none; border-radius: 6px;
+      font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary { background: #1a3a6b; color: white; }
+    .btn-primary:hover { background: #0d2347; }
+    .btn-success { background: #27ae60; color: white; }
+    .btn-success:hover { background: #1e8449; }
+    .btn-danger { background: #e74c3c; color: white; font-size: 1.1rem; letter-spacing: 0.5px; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-secondary { background: #2980b9; color: white; }
+    .btn-secondary:hover { background: #1f6391; }
+    .btn + .btn { margin-top: 10px; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .status-safe { background: #d5f5e3; color: #1e8449; }
+    .status-working { background: #fdecea; color: #c0392b; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+    /* Info box */
+    .info-box { background: #e8f0fb; border-left: 4px solid #1a3a6b; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 0.82rem; color: #1a3a6b; margin-bottom: 16px; line-height: 1.6; }
+
+    /* Message */
+    .message { padding: 12px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; margin-top: 12px; display: none; }
+    .message.show { display: block; }
+    .message.success { background: #d5f5e3; color: #1e8449; }
+    .message.error { background: #fdecea; color: #c0392b; }
+
+    .divider { height: 1px; background: #f0f4f8; margin: 16px 0; }
+    .small-text { font-size: 0.78rem; color: #999; text-align: center; margin-top: 8px; }
+
+    #dashboard { display: none; }
+    #login-section { display: block; }
+
+    .job-info { background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .job-info p { font-size: 0.82rem; color: #555; margin-bottom: 4px; }
+    .job-info strong { color: #1a3a6b; }
+
+    .back-link { color: #1a3a6b; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; font-weight: 500; }
+    .back-link:hover { color: #f5a623; }
+  </style>
+</head>
+<body>
+
+  <div class="gov-bar">
+    <span>🏛️ Government of Karnataka — HESCOM Official Portal</span>
+    <span><a href="index.html">← Back to Home</a></span>
+  </div>
+
+  <div class="header">
+    <div class="header-logo">⚡</div>
+    <div class="header-text">
+      <h1>HESCOM — Lineman Safety Portal</h1>
+      <p>Hubballi Electricity Supply Company Limited</p>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="lineman.html" class="active">Lineman Portal</a>
+    <a href="supervisor.html">Supervisor Dashboard</a>
+  </nav>
+
+  <div class="page-title">
+    <h2>🪜 Lineman Check-In / Check-Out</h2>
+    <p>Log your work before and after working on any electrical line</p>
+  </div>
+
+  <div class="container">
+
+    <!-- LOGIN SECTION -->
+    <div id="login-section">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <div class="card">
+        <div class="card-header">
+          <div class="icon">👷</div>
+          <div>
+            <h3>Lineman Login</h3>
+            <p>Enter your HESCOM employee credentials</p>
+          </div>
+        </div>
+
+        <div class="info-box">
+          ℹ️ You must log in before climbing any electrical pole. The system will automatically lock the line and notify your supervisor.
+        </div>
+
+        <label>Employee ID</label>
+        <input type="text" id="employee-id" placeholder="e.g. EMP001" />
+
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter your password" />
+
+        <button class="btn btn-primary" onclick="login()">Login to Portal</button>
+        <div class="message" id="login-msg"></div>
+        <p class="small-text">For login issues contact your supervisor or call 0836-2223907</p>
+      </div>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <div id="dashboard">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:#1a3a6b" id="welcome-name">Welcome</div>
+          <div style="font-size:0.8rem;color:#888">HESCOM Lineman</div>
+        </div>
+        <button onclick="logout()" style="background:none;border:1px solid #ccc;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:0.82rem;color:#555">Logout</button>
+      </div>
+
+      <!-- Status -->
+      <div id="status-badge" class="status-badge status-safe">
+        <span>🟢</span> <span id="status-text">Not on a job — Safe</span>
+      </div>
+
+      <!-- Start Job Card -->
+      <div class="card" id="start-job-card">
+        <div class="card-header">
+          <div class="icon">🔒</div>
+          <div>
+            <h3>Start Work — Lock the Line</h3>
+            <p>Fill this before climbing the pole</p>
+          </div>
+        </div>
+
+        <label>Line ID</label>
+        <input type="text" id="line-id" placeholder="Enter Line ID given by supervisor" />
+
+        <label>Your Current Location (optional)</label>
+        <input type="text" id="location" placeholder="e.g. Near Hubli Bus Stand Pole #12" readonly />
+        <button onclick="getLocation()" style="background:none;border:1px solid #1a3a6b;color:#1a3a6b;padding:7px 14px;border-radius:5px;cursor:pointer;font-size:0.8rem;margin-bottom:16px">📍 Get My Location</button>
+
+        <button class="btn btn-success" onclick="startJob()">🪜 I am Going Up — Lock Line</button>
+        <div class="message" id="start-msg"></div>
+      </div>
+
+      <!-- Active Job Card (shown when job is active) -->
+      <div class="card" id="active-job-card" style="display:none;border-top:4px solid #e74c3c">
+        <div class="card-header">
+          <div class="icon">⚠️</div>
+          <div>
+            <h3>Line is Locked — You are On the Pole</h3>
+            <p>Click below only after you are safely on the ground</p>
+          </div>
+        </div>
+
+        <div class="job-info" id="job-details"></div>
+
+        <button class="btn btn-secondary" onclick="completeJob()">✅ I am Down Safely — Unlock Line</button>
+        <div class="divider"></div>
+        <button class="btn btn-danger" onclick="sendSOS()">🚨 SOS — EMERGENCY HELP NEEDED</button>
+        <div class="message" id="complete-msg"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:3000/api';
+    let token = localStorage.getItem('lineman_token');
+    let currentJobId = localStorage.getItem('current_job_id');
+    let lat = '', lng = '';
+
+    if (token) showDashboard();
+
+    function showMessage(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = `message show ${type}`;
+    }
+
+    async function login() {
+      const employee_id = document.getElementById('employee-id').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (!employee_id || !password) return showMessage('login-msg', 'Please fill all fields', 'error');
+
+      try {
+        const res = await fetch(`${API}/auth/login-lineman`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ employee_id, password })
+        });
+        const data = await res.json();
+        if (!res.ok) return showMessage('login-msg', data.error, 'error');
+        token = data.token;
+        localStorage.setItem('lineman_token', token);
+        localStorage.setItem('lineman_name', data.name);
+        showDashboard();
+      } catch (e) {
+        showMessage('login-msg', 'Server not reachable. Is your server running?', 'error');
+      }
+    }
+
+    function showDashboard() {
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      const name = localStorage.getItem('lineman_name') || 'Lineman';
+      document.getElementById('welcome-name').textContent = `Welcome, ${name}`;
+      if (currentJobId) showActiveJob();
+    }
+
+    function showActiveJob() {
+      document.getElementById('start-job-card').style.display = 'none';
+      document.getElementById('active-job-card').style.display = 'block';
+      document.getElementById('status-badge').className = 'status-badge status-working';
+      document.getElementById('status-badge').innerHTML = '<span>🔴</span> <span>ON THE POLE — Line is Locked</span>';
+      document.getElementById('job-details').innerHTML = `<p>Job ID: <strong>${currentJobId}</strong></p><p>Status: <strong style="color:#e74c3c">Active — Line Locked 🔒</strong></p><p style="margin-top:8px;color:#e74c3c;font-size:0.8rem">⚠️ Do NOT click "I am Down" until you are safely on the ground.</p>`;
+    }
+
+    function getLocation() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(pos => {
+        lat = pos.coords.latitude.toFixed(4);
+        lng = pos.coords.longitude.toFixed(4);
+        document.getElementById('location').value = `${lat}, ${lng}`;
+      });
+    }
+
+    async function startJob() {
+      const line_id = document.getElementById('line-id').value.trim();
+      if (!line_id) return showMessage('start-msg', 'Please enter the Line ID', 'error');
+
+      try {
+        const res = await fetch(`${API}/jobs/start`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ line_id, location_lat: lat || '0', location_lng: lng || '0' })
+        });
+        const data = await res.json();
+        if (!res.ok) return showMessage('start-msg', data.error, 'error');
+        currentJobId = data.job.id;
+        localStorage.setItem('current_job_id', currentJobId);
+        showActiveJob();
+      } catch (e) {
+        showMessage('start-msg', 'Server not reachable', 'error');
+      }
+    }
+
+    async function completeJob() {
+      if (!confirm('Are you sure you are safely on the ground?')) return;
+      try {
+        const res = await fetch(`${API}/jobs/complete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ job_id: currentJobId })
+        });
+        const data = await res.json();
+        if (!res.ok) return showMessage('complete-msg', data.error, 'error');
+        localStorage.removeItem('current_job_id');
+        currentJobId = null;
+        document.getElementById('active-job-card').style.display = 'none';
+        document.getElementById('start-job-card').style.display = 'block';
+        document.getElementById('status-badge').className = 'status-badge status-safe';
+        document.getElementById('status-badge').innerHTML = '<span>🟢</span> <span>Back on Ground — Safe</span>';
+        showMessage('start-msg', '✅ Line unlocked. Welcome back safely!', 'success');
+      } catch (e) {
+        showMessage('complete-msg', 'Server not reachable', 'error');
+      }
+    }
+
+    async function sendSOS() {
+  try {
+    const res = await fetch(`${API}/jobs/sos`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${token}` 
+      },
+      body: JSON.stringify({ 
+        job_id: currentJobId, 
+        description: 'EMERGENCY — Lineman needs immediate help!' 
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) return showMessage('complete-msg', data.error, 'error');
+    
+    // Make entire screen red — impossible to miss
+    document.body.style.background = '#e74c3c';
+    document.body.innerHTML = `
+      <div style="
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;
+        min-height:100vh;color:white;text-align:center;padding:40px;
+        font-family:Inter,sans-serif;
+      ">
+        <div style="font-size:80px;margin-bottom:20px">🚨</div>
+        <h1 style="font-size:2rem;margin-bottom:16px">SOS SENT!</h1>
+        <p style="font-size:1.1rem;opacity:0.9;max-width:320px;line-height:1.6">
+          Your supervisor has been alerted.<br><br>
+          <strong>Stay calm. Help is coming.</strong>
+        </p>
+        <div style="margin-top:32px;font-size:0.9rem;opacity:0.8">
+          Job ID: ${currentJobId}<br>
+          Time: ${new Date().toLocaleTimeString('en-IN')}
+        </div>
+        <div style="margin-top:40px;font-size:0.85rem;opacity:0.7">
+          Emergency: <strong>1912</strong>
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    alert('SOS FAILED — Call 1912 immediately!');
+  }
+}
+
+    function logout() {
+      localStorage.removeItem('lineman_token');
+      localStorage.removeItem('lineman_name');
+      token = null;
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('dashboard').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinemanSafe – HESCOM Lineman Safety Portal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f0f4f8; color: #1a1a2e; }
+
+    /* Top gov bar */
+    .gov-bar {
+      background: #1a3a6b;
+      color: #fff;
+      font-size: 12px;
+      padding: 6px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gov-bar a { color: #f5c842; text-decoration: none; margin-left: 16px; }
+
+    /* Header */
+    .header {
+      background: #fff;
+      border-bottom: 4px solid #f5a623;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .header-logo {
+      width: 64px; height: 64px;
+      background: #1a3a6b;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .header-text h1 { font-size: 1.3rem; color: #1a3a6b; font-weight: 700; }
+    .header-text p { font-size: 0.8rem; color: #555; margin-top: 2px; }
+    .header-text .subtitle { font-size: 0.75rem; color: #f5a623; font-weight: 600; letter-spacing: 0.5px; }
+
+    /* Nav */
+    .nav {
+      background: #1a3a6b;
+      padding: 0 40px;
+      display: flex;
+      gap: 0;
+    }
+    .nav a {
+      color: #ccd9f0;
+      text-decoration: none;
+      padding: 12px 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .nav a:hover, .nav a.active {
+      color: #f5a623;
+      border-bottom-color: #f5a623;
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #1a3a6b 0%, #0d2347 100%);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '⚡';
+      position: absolute;
+      font-size: 300px;
+      opacity: 0.03;
+      top: -60px; right: -40px;
+    }
+    .hero h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero h2 span { color: #f5a623; }
+    .hero p { color: #a8c4e8; font-size: 1rem; max-width: 560px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 14px 36px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-primary { background: #f5a623; color: #1a1a2e; }
+    .btn-primary:hover { background: #e09510; }
+    .btn-outline { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.4); }
+    .btn-outline:hover { border-color: #f5a623; color: #f5a623; }
+
+    /* Notice bar */
+    .notice-bar {
+      background: #fff8e1;
+      border-left: 4px solid #f5a623;
+      padding: 10px 40px;
+      font-size: 0.82rem;
+      color: #7a5500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .notice-bar strong { color: #c47a00; }
+
+    /* Cards */
+    .cards-section { padding: 40px; max-width: 1100px; margin: 0 auto; }
+    .cards-section h3 { font-size: 1.1rem; color: #1a3a6b; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid #f5a623; padding-bottom: 8px; display: inline-block; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border-top: 4px solid #1a3a6b;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+    .card-icon { font-size: 2rem; margin-bottom: 12px; }
+    .card h4 { font-size: 1rem; color: #1a3a6b; font-weight: 700; margin-bottom: 8px; }
+    .card p { font-size: 0.85rem; color: #666; line-height: 1.6; margin-bottom: 16px; }
+    .card .btn { padding: 10px 24px; font-size: 0.9rem; }
+    .card.danger { border-top-color: #e74c3c; }
+    .card.success { border-top-color: #27ae60; }
+
+    /* Stats */
+    .stats {
+      background: #1a3a6b;
+      padding: 30px 40px;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; color: white; }
+    .stat .number { font-size: 2rem; font-weight: 700; color: #f5a623; }
+    .stat .label { font-size: 0.8rem; color: #a8c4e8; margin-top: 4px; }
+
+    /* Footer */
+    .footer {
+      background: #0d1f3c;
+      color: #a8c4e8;
+      padding: 24px 40px;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .footer strong { color: #f5a623; }
+  </style>
+</head>
+<body>
+
+  <!-- Top gov bar -->
+  <div class="gov-bar">
+    <span>🏛️ Government of Karnataka — Official Portal</span>
+    <span>
+      <a href="#">Skip to content</a>
+      <a href="#">Kannada</a>
+      <a href="#">Screen Reader</a>
+    </span>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-logo">⚡</div>
+    <div class="header-text">
+      <h1>Hubli Electricity Supply Company Limited (HESCOM)</h1>
+      <p>Navanagar, P.B Road, Hubballi – 580025 | ☎ 0836-2223907</p>
+      <div class="subtitle">⚠️ LinemanSafe — Lineman Safety & Check-in Portal</div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="index.html" class="active">Home</a>
+    <a href="lineman.html">Lineman Portal</a>
+    <a href="supervisor.html">Supervisor Dashboard</a>
+    <a href="#">Safety Guidelines</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <!-- Notice -->
+  <div class="notice-bar">
+    ⚠️ <strong>Safety Notice:</strong> All linemen must check in digitally before working on live lines. Non-compliance is a safety violation.
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h2>Protecting Every <span>HESCOM Lineman</span><br>Working on Live Lines</h2>
+    <p>A digital check-in system that locks electrical lines while linemen are working — preventing accidental power restoration and saving lives across 7 districts of Karnataka.</p>
+    <div class="hero-buttons">
+      <a href="lineman.html" class="btn btn-primary">🪜 Lineman Login</a>
+      <a href="supervisor.html" class="btn btn-outline">📋 Supervisor Dashboard</a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="number">7</div>
+      <div class="label">Districts Covered</div>
+    </div>
+    <div class="stat">
+      <div class="number">0</div>
+      <div class="label">Lines Locked Right Now</div>
+    </div>
+    <div class="stat">
+      <div class="number">24/7</div>
+      <div class="label">System Availability</div>
+    </div>
+    <div class="stat">
+      <div class="number">100%</div>
+      <div class="label">Digital Accountability</div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-section">
+    <h3>Quick Access</h3>
+    <div class="cards">
+      <div class="card success">
+        <div class="card-icon">🪜</div>
+        <h4>Lineman Check-In</h4>
+        <p>Login before climbing a pole. The system will automatically lock the line and alert your supervisor. No manual calls needed.</p>
+        <a href="lineman.html" class="btn btn-primary">Go to Lineman Portal</a>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h4>Supervisor Dashboard</h4>
+        <p>Live view of all active jobs and locked lines across your zone. See which linemen are currently on poles in real time.</p>
+        <a href="supervisor.html" class="btn btn-outline" style="color:#1a3a6b;border-color:#1a3a6b">Open Dashboard</a>
+      </div>
+      <div class="card danger">
+        <div class="card-icon">🚨</div>
+        <h4>Emergency SOS</h4>
+        <p>In case of electric shock or danger, the lineman can trigger an SOS from the portal. Supervisor is alerted immediately.</p>
+        <a href="lineman.html" class="btn" style="background:#e74c3c;color:white">SOS Procedure</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <strong>HESCOM LinemanSafe Portal</strong> — Hubli Electricity Supply Company Limited, Karnataka<br>
+    For emergencies: <strong>1912</strong> | Corporate Office: <strong>0836-2223907</strong> | Email: customercare@hescom.co.in
+  </div>
+
+</body>
+</html>
