@@ -64,6 +64,31 @@
     .welcome-bar p { font-size: 0.8rem; color: #888; }
     .logout-btn { background: none; border: 1px solid #ccc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; color: #555; font-family: 'Inter', sans-serif; }
     .auto-refresh { font-size: 0.75rem; color: #a8c4e8; margin-top: 4px; }
+    @media (max-width: 768px) {
+  .header { padding: 12px 16px; gap: 10px; }
+  .header-logo { width: 40px; height: 40px; font-size: 18px; }
+  .header-text h1 { font-size: 0.9rem; }
+  .nav { padding: 0 8px; overflow-x: auto; }
+  .nav a { padding: 10px 12px; font-size: 0.78rem; white-space: nowrap; }
+  .container { padding: 0 12px; margin: 16px auto; }
+  .card { padding: 16px 12px; }
+  .page-title { padding: 16px; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card { padding: 14px; }
+  .stat-card .number { font-size: 1.5rem; }
+  /* Side by side becomes stacked on mobile */
+  div[style*="grid-template-columns:1fr 1fr"] { 
+    display: block !important; 
+  }
+  div[style*="grid-template-columns:1fr 1fr"] > div {
+    margin-bottom: 16px;
+  }
+  table { font-size: 0.78rem; }
+  th, td { padding: 8px 10px; }
+  .gov-bar { font-size: 10px; padding: 5px 12px; }
+  /* Tables scroll horizontally */
+  .card { overflow-x: auto; }
+}
   </style>
 </head>
 <body>
