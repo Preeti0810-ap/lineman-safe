@@ -1,0 +1,225 @@
+# ⚡ LinemanSafe — HESCOM Lineman Safety Portal
+
+> A digital check-in/check-out system that protects electrical linemen working on live lines — preventing accidental power restoration and saving lives across Karnataka.
+
+🔗 **Live Demo:** https://lineman-safe-production.up.railway.app
+
+---
+
+## 🎯 Problem Statement
+
+HESCOM (Hubli Electricity Supply Company Limited) linemen risk their lives every day working on live electrical lines across 7 districts of Karnataka. The biggest danger — someone restoring power while a lineman is still on the pole.
+
+Currently, shutdown coordination happens over **phone calls and word of mouth** — no digital record, no verification, no accountability.
+
+This project was inspired by real incidents witnessed at HESCOM, including fatalities caused by poor communication during line maintenance.
+
+---
+
+## 💡 Solution
+
+LinemanSafe is a **pure software solution** — no IoT devices required. Just a phone and internet connection.
+
+```
+Lineman opens app → logs in → clicks "Going Up"
+         ↓
+System LOCKS the line in database
+         ↓
+Supervisor sees RED ALERT on dashboard
+         ↓
+Lineman finishes work → clicks "I am Down Safely"
+         ↓
+System UNLOCKS the line → power can be restored
+```
+
+---
+
+## 🖥️ Screenshots
+
+### Home Page (HESCOM Official Style)
+![Home](https://lineman-safe-production.up.railway.app)
+
+### Lineman Portal
+- Login with employee ID
+- One-tap line lock before climbing
+- SOS emergency button (full screen red alert)
+- GPS location tracking
+
+### Supervisor Dashboard
+- Live view of all locked lines
+- SOS emergency alerts (auto-refresh every 3 seconds)
+- Completed jobs — who came down safely and when
+- All registered lines with status
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Backend** | Node.js + Express.js |
+| **Database** | PostgreSQL |
+| **Authentication** | JWT (JSON Web Tokens) + bcryptjs |
+| **Frontend** | HTML5 + CSS3 + Vanilla JavaScript |
+| **Deployment** | Railway (Backend + Database) |
+| **Version Control** | Git + GitHub |
+
+---
+
+## 📁 Project Structure
+
+```
+lineman-safe/
+├── src/
+│   ├── config/
+│   │   └── db.js              # PostgreSQL connection
+│   ├── routes/
+│   │   ├── auth.js            # Login + Register APIs
+│   │   ├── jobs.js            # Going up / coming down / SOS
+│   │   └── lines.js           # Line lock/unlock/status
+│   ├── middleware/
+│   │   └── auth.js            # JWT verification
+│   └── app.js                 # Express server
+├── public/
+│   ├── index.html             # HESCOM home page
+│   ├── lineman.html           # Lineman portal
+│   └── supervisor.html        # Supervisor dashboard
+├── .env                       # Environment variables
+└── package.json
+```
+
+---
+
+## 🗄️ Database Schema
+
+```sql
+linemen        — Lineman accounts (employee ID, phone, password)
+supervisors    — Supervisor accounts
+lines          — All electrical lines (line code, area, district)
+jobs           — Every work session (who, which line, when)
+incidents      — SOS alerts and emergencies
+```
+
+---
+
+## 🔌 API Endpoints
+
+### Auth
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register-lineman` | Register new lineman |
+| POST | `/api/auth/login-lineman` | Lineman login → JWT token |
+| POST | `/api/auth/register-supervisor` | Register supervisor |
+| POST | `/api/auth/login-supervisor` | Supervisor login → JWT token |
+
+### Jobs
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/jobs/start` | Lineman going UP → locks line |
+| POST | `/api/jobs/complete` | Lineman DOWN safely → unlocks line |
+| POST | `/api/jobs/sos` | Emergency SOS alert |
+| GET | `/api/jobs/active` | All active jobs |
+
+### Lines
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/lines` | All lines with status |
+| GET | `/api/lines/locked` | Currently locked lines |
+| GET | `/api/lines/sos-alerts` | All SOS incidents |
+| GET | `/api/lines/completed-jobs` | Recent completed jobs |
+| POST | `/api/lines/add` | Add new line |
+
+---
+
+## 🚀 Run Locally
+
+### Prerequisites
+- Node.js v18+
+- PostgreSQL
+
+### Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/Preeti0810-ap/lineman-safe.git
+cd lineman-safe
+
+# Install dependencies
+npm install
+
+# Create .env file
+cp .env.example .env
+# Fill in your PostgreSQL credentials
+
+# Create database tables
+psql -U postgres -d lineman_safe -f schema.sql
+
+# Start development server
+npm run dev
+```
+
+Server runs at `http://localhost:3000`
+
+---
+
+## 🔐 Environment Variables
+
+```
+PORT=3000
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=lineman_safe
+DB_USER=postgres
+DB_PASSWORD=your_password
+JWT_SECRET=your_secret_key
+```
+
+---
+
+## ✨ Key Features
+
+- ✅ **Digital line locking** — line cannot be re-energised while lineman is on pole
+- ✅ **JWT authentication** — secure login for linemen and supervisors
+- ✅ **One-tap SOS** — full screen red emergency alert, no typing needed
+- ✅ **Live supervisor dashboard** — auto-refreshes every 3 seconds
+- ✅ **Complete audit trail** — every job recorded with timestamps
+- ✅ **GPS location tracking** — supervisor knows where lineman is
+- ✅ **Mobile responsive** — works on any device in the field
+- ✅ **HESCOM official design** — Karnataka government portal style
+
+---
+
+## 🏗️ Future Roadmap
+
+- [ ] QR code on poles — scan instead of typing Line ID
+- [ ] OTP login — phone number based auth for field workers
+- [ ] PDF daily reports — downloadable job summary
+- [ ] District-wise dashboard — Hubli, Dharwad, Gadag separate views
+- [ ] Kannada language support
+- [ ] React Native mobile app
+- [ ] Offline mode with sync
+- [ ] Weather alert integration
+
+---
+
+## 👩‍💻 Developer
+
+**Preeti Pattanashetti**
+MCA Final Year — KLE Institute of Technology, Hubballi
+
+- 🔗 [GitHub](https://github.com/Preeti0810-ap)
+- 💼 [LinkedIn](https://linkedin.com/in/your-profile)
+
+---
+
+## 🙏 Inspiration
+
+This project was built after witnessing HESCOM linemen risk their lives daily — including fatalities caused by lack of digital coordination. My mother works at HESCOM, and this project is dedicated to every lineman who goes up a pole trusting that someone on the ground has their back.
+
+**LinemanSafe gives them that guarantee — digitally.**
+
+---
+
+## 📄 License
+
+MIT License — feel free to use and adapt for other electricity distribution companies.
